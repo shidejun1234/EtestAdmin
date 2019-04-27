@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\question\add.html";i:1556173459;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\question\add.html";i:1556241298;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -144,13 +144,16 @@
                 success: function (res) {
                     layer.alert(res, {
                         title: '消息'
+                    },function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                     })
                 }
             })
-            setTimeout(function () {
-                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                parent.layer.close(index); //再执行关闭
-            }, 1000)
+            // setTimeout(function () {
+            //     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            //     parent.layer.close(index); //再执行关闭
+            // }, 1000)
             return false;
         });
 

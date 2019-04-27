@@ -22,6 +22,7 @@ class Question extends Base {
             $subject = $param["subject"];
             $type = $param["type"];
             $answer = $param["answer"];
+            $analysis = $param["analysis"];
             $create_time = date("Y-m-d H:i:s");
             $optionList=$param['options[op'];
             $options = [];
@@ -35,6 +36,7 @@ class Question extends Base {
                 'type' => $type,
                 'options' => $options,
                 'answer' => $answer,
+                'analysis'=>$analysis,
                 'create_time' => $create_time];
             $res = db('question')
                 ->insert($data);
@@ -65,6 +67,7 @@ class Question extends Base {
             $subject = $param["subject"];
             $type = $param["type"];
             $answer = $param["answer"];
+            $analysis = $param["analysis"];
             $create_time = date("Y-m-d H:i:s");
             $optionList=$param['options[op'];
             $options = [];
@@ -78,6 +81,7 @@ class Question extends Base {
                 'type' => $type,
                 'options' => $options,
                 'answer' => $answer,
+                'analysis'=>$analysis,
                 'create_time' => $create_time];
             $res = db('question')
                 ->where('id', $id)
@@ -155,6 +159,7 @@ class Question extends Base {
                 'a.type',
                 'a.options',
                 'a.answer',
+                'a.analysis',
                 'a.subject',
                 'a.create_time',
                 'b.name'])

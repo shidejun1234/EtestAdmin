@@ -70,29 +70,55 @@
                        onclick="delOption('optionB')">
             </td>
         </tr>
+        <tr class="optionC">
+            <td><input type="radio" name="answer" value="C" title="选项C"></td>
+            <td>
+                <textarea placeholder="请输入内容" lay-verify="required" name="options[op][C]" class="layui-textarea"></textarea>
+            </td>
+            <td>
+                <input type="button" class="layui-btn layui-btn-danger layui-btn-xs" value="删除"
+                       onclick="delOption('optionC')">
+            </td>
+        </tr>
+        <tr class="optionD">
+            <td><input type="radio" name="answer" value="D" title="选项D"></td>
+            <td>
+                <textarea placeholder="请输入内容" lay-verify="required" name="options[op][D]" class="layui-textarea"></textarea>
+            </td>
+            <td>
+                <input type="button" class="layui-btn layui-btn-danger layui-btn-xs" value="删除"
+                       onclick="delOption('optionD')">
+            </td>
+        </tr>
         <tr>
-            <td colspan="4">
+            <td colspan="1">
+                    试题解析
+            </td>
+            <td colspan="2">
+                <div class="layui-form-item">
+                    <textarea placeholder="请输入试题解析" name="analysis" class="layui-textarea"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
                 <div class="layui-form-item" style="margin-left: 30%;">
                     <div class="layui-input-block">
                         <input type="button" class="layui-btn layui-btn-normal" id="add_option" value="添加选项">
+                        <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
                     </div>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-        </div>
-    </div>
 </form>
 
 <script src="__PUBLIC__/js/jquery.js"></script>
 <script src="__PUBLIC__/layui/layui.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
-    var oIndex = 66;
+    var oIndex = 68;
 
     function delOption(e) {
         if (e === 'optionA' || e === 'optionB') {
@@ -133,7 +159,9 @@
                 layer.msg('你还没选择正确答案', {icon: 5, anim: 6});
                 return false;
             }
-            console.log(data.field)
+            if (!data.field.analysis){
+                data.field.analysis='该题暂无解析'
+            }
             $.ajax({
                 url: '{:url("Question/add")}',
                 type: 'POST',
@@ -143,13 +171,12 @@
                 success: function (res) {
                     layer.alert(res, {
                         title: '消息'
+                    },function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                     })
                 }
             })
-            setTimeout(function () {
-                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                parent.layer.close(index); //再执行关闭
-            }, 1000)
             return false;
         });
 

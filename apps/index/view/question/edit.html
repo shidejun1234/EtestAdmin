@@ -66,21 +66,27 @@
         </tr>
         {/volist}
         <tr>
-            <td colspan="4">
+            <td colspan="1">
+                试题解析
+            </td>
+            <td colspan="2">
+                <div class="layui-form-item">
+                    <textarea placeholder="请输入试题解析" name="analysis" class="layui-textarea">{$list['analysis']}</textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
                 <div class="layui-form-item" style="margin-left: 30%;">
                     <div class="layui-input-block">
                         <input type="button" class="layui-btn layui-btn-normal" id="add_option" value="添加选项">
+                        <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
                     </div>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-        </div>
-    </div>
 </form>
 
 <script src="__PUBLIC__/js/jquery.js"></script>
@@ -128,6 +134,9 @@
                 layer.msg('你还没选择正确答案', {icon: 5, anim: 6});
                 return false;
             }
+            if (!data.field.analysis){
+                data.field.analysis='该题暂无解析'
+            }
             $.ajax({
                 url: '{:url("Question/edit")}',
                 type: 'POST',
@@ -137,13 +146,12 @@
                 success: function (res) {
                     layer.alert(res, {
                         title: '消息'
+                    },function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
                     })
                 }
             })
-            setTimeout(function () {
-                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                parent.layer.close(index); //再执行关闭
-            }, 1000)
             return false;
         });
 

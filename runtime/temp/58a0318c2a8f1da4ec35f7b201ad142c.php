@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\user\lst.html";i:1555922623;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\user\lst.html";i:1556269208;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,7 +48,7 @@
                 , {field: 'nickName', title: '用户名', sort: true}
                 , {field: 'name', title: '所选科目', sort: true}
                 , {field: 'create_time', title: '创建时间', sort: true}
-                , {fixed: 'right', title: '操作', toolbar: '#testBar', width: 60}
+                , {fixed: 'right', title: '操作', toolbar: '#testBar', width: 70}
             ]]
             , parseData: function (res) { //res 即为原始返回的数据
                 var curr = 1;

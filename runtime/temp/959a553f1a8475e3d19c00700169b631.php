@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\login\login.html";i:1556186140;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:57:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\login\reg.html";i:1556186218;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +26,7 @@
                 用户名
             </label>
             <div class="layui-input-block">
-                <input type="text" name="user" lay-verify="title" autocomplete="off" placeholder="请输入用户名"
+                <input type="text" name="user" lay-verify="title" autocomplete="off" placeholder="请输入标题"
                        class="layui-input">
             </div>
         </div>
@@ -36,6 +36,15 @@
             </label>
             <div class="layui-input-block">
                 <input type="password" name="pwd" lay-verify="title" autocomplete="off" placeholder="密码"
+                       class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                重复密码
+            </label>
+            <div class="layui-input-block">
+                <input type="password" name="pwd2" lay-verify="title" autocomplete="off" placeholder="密码"
                        class="layui-input ">
             </div>
         </div>
@@ -52,8 +61,8 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即登录</button>
-                <input class="layui-btn" style="width: 98px;" value="前往注册" onclick="reg()">
+                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即注册</button>
+                <input class="layui-btn" style="width: 98px;" value="前往登录" onclick="login()">
             </div>
         </div>
     </form>
@@ -79,26 +88,43 @@
                 layer.msg('验证码不能为空', {icon: 5, anim: 6});
                 return false;
             }
+            if (data.field.pwd != data.field.pwd2) {
+                layer.msg('两次密码不一致', {icon: 5, anim: 6});
+                return false;
+            }
+            var han = /.*[\u4e00-\u9fa5]+.*$/;
+            if (han.test(data.field.pwd)) {
+                layer.msg('密码不能含有中文', {icon: 5, anim: 6});
+                return false;
+            }
+            ;
+            if (data.field.user.length > 20 || data.field.user.length < 3) {
+                layer.msg('用户名为3-20位', {icon: 5, anim: 6});
+                return false;
+            }
+            if (data.field.pwd.length > 20 || data.field.pwd.length < 6) {
+                layer.msg('密码为6-20位', {icon: 5, anim: 6});
+                return false;
+            }
             $.ajax({
-                url: '<?php echo url("Login/login"); ?>',
+                url: '<?php echo url("Login/reg"); ?>',
                 type: 'POST',
                 data: {
                     user: data.field.user,
                     pwd: data.field.pwd,
                     code: data.field.code
                 },
-                success:function (res) {
+                success: function (res) {
                     if (res.code == 1) {
                         layer.alert(res.msg, {
                             title: '消息'
                         })
-                        window.location.href='<?php echo url("Index/index"); ?>'
+                        window.location.href='<?php echo url("Login/login"); ?>'
                     } else if (res.code == 0) {
                         layer.msg(res.msg, {icon: 5, anim: 6});
                     }else{
                         layer.msg(res, {icon: 5, anim: 6});
                     }
-
                 }
             })
             return false;
@@ -106,8 +132,8 @@
 
     });
 
-    function reg() {
-        window.location.href='<?php echo url("Login/reg"); ?>';
+    function login() {
+        window.location.href='<?php echo url("Login/login"); ?>';
     }
 
 </script>

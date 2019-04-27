@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\index\index.html";i:1556184593;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\index\index.html";i:1556271853;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +30,7 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    贤心
+                    <?php echo \think\Request::instance()->session('username'); ?>
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">基本资料</a></dd>
@@ -54,6 +54,12 @@
                     <a class="" href="javascript:;">题目管理</a>
                     <dl class="layui-nav-child">
                         <dd><a href="<?php echo url('Question/lst'); ?>" target="right">题目列表</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="" href="javascript:;">考试管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="<?php echo url('Test/lst'); ?>" target="right">考试列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
