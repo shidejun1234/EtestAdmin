@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\login\login.html";i:1556186140;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\login\login.html";i:1556502955;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,7 +53,7 @@
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit="" lay-filter="demo1">立即登录</button>
-                <input class="layui-btn" style="width: 98px;" value="前往注册" onclick="reg()">
+                <input class="layui-btn layui-btn-normal" style="width: 98px;" value="前往注册" onclick="reg()">
             </div>
         </div>
     </form>

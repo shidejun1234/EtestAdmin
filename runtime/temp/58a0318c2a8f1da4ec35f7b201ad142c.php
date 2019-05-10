@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\user\lst.html";i:1556269208;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\user\lst.html";i:1556502890;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,7 +99,8 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                // location.reload(true);
+                                table.reload('user-table');
                             } else {
                                 layer.msg('删除失败！', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -130,7 +131,8 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                // location.reload(true);
+                                table.reload('user-table');
                             } else {
                                 layer.msg('删除失败！', {icon: 2, time: 3000, shade: 0.2});
                             }

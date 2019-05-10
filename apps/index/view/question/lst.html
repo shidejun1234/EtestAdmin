@@ -15,9 +15,17 @@
 <!--<div class="layui-btn-group demoTable">-->
 <!--    <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="getCheckData">删除选中</button>-->
 <!--</div>-->
-<div class="layui-btn-container questionTable">
+<div class="tableTop" style="float: right;margin: 5px;">
+    搜索ID：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+</div>
+<div class="layui-btn-container questionTable tableTop">
     <button class="layui-btn layui-btn-danger layui-btn-sm" data-type="delCheck">删除选中</button>
     <button class="layui-btn layui-btn-sm" data-type="addSubject">添加题目</button>
+    <button type="button" class="layui-btn layui-btn-sm" id="excel"><i class="layui-icon"></i>上传Word</button>
 </div>
 <table id="question-table" class="question-table" lay-filter="test"></table>
 
@@ -29,8 +37,27 @@
 <script src="__PUBLIC__/js/jquery.js"></script>
 <script src="__PUBLIC__/layui/layui.js"></script>
 <script>
-    layui.use('table', function () {
+    layui.use(['table','upload'], function () {
         var table = layui.table;
+        var upload = layui.upload;
+        upload.render({ //允许上传的文件后缀
+            elem: '#excel'
+            ,url: '{:url("Question/readWord")}'
+            ,accept: 'file' //普通文件
+            ,field:'excel'
+            ,exts: 'xls|xlsx' //只允许上传压缩文件
+            ,before: function(){
+                layer.msg('上传中...', {icon: 16, shade: 0.3, time: 5000});
+            }
+            ,done: function(res){
+                if (res.code==0){
+                    layer.msg('上传成功！', {icon: 1, time: 2000, shade: 0.2});
+                    table.reload('question-table');
+                }else{
+                    layer.msg('格式不对！', {icon: 2, time: 3000, shade: 0.2});
+                }
+            }
+        });
 
         //第一个实例
         table.render({
@@ -78,6 +105,8 @@
             });
         });
 
+        var $ = layui.$;
+
         var active = {
             delCheck: function () { //获取选中数据
                 var checkStatus = table.checkStatus('question-table')
@@ -101,9 +130,10 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                setTimeout(function () {
-                                    location.reload(true);
-                                },300)
+                                table.reload('question-table');
+                                // setTimeout(function () {
+                                //     location.reload(true);
+                                // },300)
                             } else {
                                 layer.msg('删除失败！', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -121,13 +151,30 @@
                     area: ['893px', '600px'],
                     content: '{:url("Question/add")}',
                     end: function () {
-                        window.location.reload();
+                        table.reload('question-table');
+                        // window.location.reload();
+                    }
+                });
+            },
+            reload: function(){
+                var demoReload = $('#demoReload');
+                console.log(demoReload.val())
+
+                //执行重载
+                table.reload('question-table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        key: JSON.stringify({
+                            id: demoReload.val()
+                        })
                     }
                 });
             }
         };
 
-        $('.questionTable .layui-btn').on('click', function () {
+        $('.tableTop .layui-btn').on('click', function () {
             var type = layui.$(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
@@ -147,9 +194,10 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                setTimeout(function () {
-                                    location.reload(true);
-                                },300)
+                                table.reload('question-table');
+                                // setTimeout(function () {
+                                //     location.reload(true);
+                                // },300)
                             } else {
                                 layer.msg('删除失败！', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -161,13 +209,14 @@
                 console.log(data.id)
                 layer.open({
                     type: 2,
-                    title: '添加题目',
+                    title: '编辑题目',
                     shadeClose: true,
                     shade: 0.3,
                     area: ['893px', '600px'],
                     content: '{:url("Question/edit")}?id='+data.id,
                     end: function () {
-                        window.location.reload();
+                        // window.location.reload();
+                        table.reload('question-table');
                     }
                 });
             }

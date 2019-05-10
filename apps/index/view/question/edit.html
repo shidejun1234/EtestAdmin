@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form class="layui-form" action="">
+<form class="layui-form" id="form" action="">
     <input type="hidden" name="id" value="{$list['id']}">
     <div class="layui-form-item">
         <label class="layui-form-label">题目</label>
@@ -34,8 +34,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">题型</label>
         <div class="layui-input-block">
-            <input type="radio" name="type" value="选择题" title="选择题" {$list['type']=='选择题'?'checked':''}>
-            <input type="radio" name="type" value="判断题" title="判断题" {$list['type']=='判断题'?'checked':''}>
+            <input type="radio" name="type" value="选择题" title="选择题" lay-filter="type" {$list['type']=='选择题'?'checked':''}>
+            <input type="radio" name="type" value="判断题" title="判断题" lay-filter="type" {$list['type']=='判断题'?'checked':''}>
+            <input type="radio" name="type" value="多项选择题" title="多项选择题" lay-filter="type" {$list['type']=='多项选择题'?'checked':''}>
         </div>
     </div>
     <table class="layui-table" lay-skin="line">
@@ -52,10 +53,15 @@
             <th>操作</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="options">
         {volist name="$options" id="vo"}
         <tr class="option{$key}">
-            <td><input type="radio" name="answer" value="{$key}" title="选项{$key}" {$list['answer']==$key?'checked':''}></td>
+            {range name="$key" value="$answers" type="in"}
+            <td><input type="{$list['type']=='多项选择题'?'checkbox':'radio'}" name="answer" value="{$key}" title="选项{$key}" checked></td>
+            {/range}
+            {range name="$key" value="$answers" type="notin"}
+            <td><input type="{$list['type']=='多项选择题'?'checkbox':'radio'}" name="answer" value="{$key}" title="选项{$key}"></td>
+            {/range}
             <td>
                 <textarea placeholder="请输入内容" lay-verify="required" name="options[op][{$key}]" class="layui-textarea">{$vo}</textarea>
             </td>
@@ -96,6 +102,8 @@
 
     var oIndex = 64 + {$optionsLength};
 
+
+
     function delOption(e) {
         if (e === 'optionA' || e === 'optionB') {
             layer.msg('至少要有两个选项', {icon: 5, anim: 6});
@@ -112,13 +120,15 @@
 
     layui.use('form', function () {
         var form = layui.form
-            , layer = layui.layer
+            , layer = layui.layer,
+            answerflag={$list['type']=='多项选择题'?'"checkbox"':'"radio"'},
+            answer=document.getElementsByName("answer");
         //添加选项
         $('#add_option').on('click', function () {
             oIndex++;
             $('.option' + String.fromCharCode(oIndex - 1)).after('\n' +
                 '        <tr class="option' + String.fromCharCode(oIndex) + '">\n' +
-                '            <td><input type="radio" name="answer" value="' + String.fromCharCode(oIndex) + '" title="选项' + String.fromCharCode(oIndex) + '"></td>\n' +
+                '            <td><input type="'+answerflag+'" name="answer" value="' + String.fromCharCode(oIndex) + '" title="选项' + String.fromCharCode(oIndex) + '"></td>\n' +
                 '            <td>\n' +
                 '                <textarea placeholder="请输入内容" lay-verify="required" name="options[op][' + String.fromCharCode(oIndex) + ']" class="layui-textarea"></textarea>\n' +
                 '            </td>\n' +
@@ -128,9 +138,68 @@
                 '        </tr>');
             form.render();
         });
+
+        form.on('radio(type)', function (data) {
+            switch (data.value) {
+                case "判断题":
+                    while(oIndex>66) {
+                        $('.option' + String.fromCharCode(oIndex)).remove();
+                        oIndex--;
+                    }
+                    $('.optionA textarea').val('对');
+                    $('.optionB textarea').val('错');
+                    $("#options .layui-form-checkbox").remove();
+                    for (let i=0;i<answer.length;i++) {
+                        answer[i].type="radio";
+                    }
+                    answerflag='radio';
+                    form.render();
+                    break;
+                case "选择题":
+                    while(oIndex<68) {
+                        console.log(String.fromCharCode(oIndex))
+                        oIndex++;
+                        $('.option' + String.fromCharCode(oIndex - 1)).after('\n' +
+                            '        <tr class="option' + String.fromCharCode(oIndex) + '">\n' +
+                            '            <td><input type="radio" name="answer" value="' + String.fromCharCode(oIndex) + '" title="选项' + String.fromCharCode(oIndex) + '"></td>\n' +
+                            '            <td>\n' +
+                            '                <textarea placeholder="请输入内容" lay-verify="required" name="options[op][' + String.fromCharCode(oIndex) + ']" class="layui-textarea"></textarea>\n' +
+                            '            </td>\n' +
+                            '            <td>\n' +
+                            '                <input type="button" class="layui-btn layui-btn-danger layui-btn-xs" value="删除" onclick="delOption(\'option' + String.fromCharCode(oIndex) + '\')">\n' +
+                            '            </td>\n' +
+                            '        </tr>');
+                    }
+                    $("#options .layui-form-checkbox").remove();
+                    for (let i=0;i<answer.length;i++) {
+                        answer[i].type="radio";
+                    }
+                    answerflag='radio';
+                    form.render();
+                    break;
+                case "多项选择题":
+                    $("#options .layui-form-radio").remove();
+                    for (let i=0;i<answer.length;i++) {
+                        answer[i].type="checkbox";
+                    }
+                    answerflag='checkbox';
+                    form.render();
+                    break;
+            }
+        });
+
         //监听提交
         form.on('submit(demo1)', function (data) {
-            if (!data.field.answer) {
+            let fields=$("#form").serializeArray();
+            let answers='[';
+            fields.forEach(function (item) {
+                if(item.name=='answer'){
+                    answers+='"'+item.value+'",';
+                }
+            })
+            data.field.answer=answers.substring(0,answers.length-1)+']';
+            console.log(answers)
+            if (answers=='[') {
                 layer.msg('你还没选择正确答案', {icon: 5, anim: 6});
                 return false;
             }

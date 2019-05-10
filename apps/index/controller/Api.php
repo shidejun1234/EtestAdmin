@@ -9,6 +9,7 @@
 namespace app\index\controller;
 
 use think\Controller;
+use think\Db;
 use think\Exception;
 use tp_tools\Curl as Curl;
 
@@ -181,16 +182,11 @@ class Api extends Controller {
                 $where['user']=['=',$user];
                 $where['subject']=['=',$subject];
                 $where['type']=[['=','order'],['=','wrong'],'or'];
-                $list = db('test')
-                    ->field(['question'])
-                    ->where($where)
-                    ->order('create_time', 'desc')
-                    ->find();
+                $list=$this->getTestQuestion($where,'create_time','desc');
                 if ($list) {
-                    $question = json_decode($list['question']);
                     $questionList = [];
-                    foreach ($question as $val) {
-                        if ($val->answer !== $val->checkAnswer) {
+                    foreach ($list as $val) {
+                        if ($val['answer'] !== $val['checkAnswer']) {
                             array_push($questionList, $val);
                         }
                     }
@@ -205,7 +201,7 @@ class Api extends Controller {
      * getTest
      */
     public function getTest() {
-        $num = 20;
+        $num = 100;
         $time = 60;
         $total = 100;
         $qualified = 80;
@@ -231,16 +227,11 @@ class Api extends Controller {
                 $where['user']=['=',$user];
                 $where['subject']=['=',$subject];
                 $where['type']=[['=','order'],['=','wrong'],'or'];
-                $list = db('test')
-                    ->field(['question'])
-                    ->where($where)
-                    ->order('create_time', 'desc')
-                    ->find();
+                $list=$this->getTestQuestion($where,'create_time','desc');
                 if ($list) {
-                    $question = json_decode($list['question']);
                     $questionList = [];
-                    foreach ($question as $val) {
-                        if ($val->answer !== $val->checkAnswer) {
+                    foreach ($list as $val) {
+                        if ($val['answer'] !== $val['checkAnswer']) {
                             array_push($questionList, $val);
                         }
                     }
@@ -268,7 +259,8 @@ class Api extends Controller {
             $data = [
                 'user' => $list->user,
                 'subject' => $list->subject,
-                'question' => json_encode($list->question, 320),
+                'question_ids' => $list->question_ids,
+                'check_answer' => $list->check_answer,
                 'time' => $list->time,
                 'num' => $list->num,
                 'total' => $list->total,
@@ -311,6 +303,24 @@ class Api extends Controller {
         }
     }
 
+    public function getTestQuestion($where=[],$field='id',$order='asc'){
+        $list = db('test')
+            ->field(['question_ids','check_answer'])
+            ->where($where)
+            ->order($field,$order)
+            ->find();
+        if (!$list){
+            return 0;
+        }
+        $check_answer=json_decode($list['check_answer']);
+        $question_ids=$list['question_ids'];
+        $question = Db::query("select * from et_question where id in($question_ids) ORDER BY FIND_IN_SET( id, '$question_ids')");
+        foreach ($question as $key=>$val){
+            $question[$key]['checkAnswer']=$check_answer[$key]->answer;
+        }
+        return $question;
+    }
+
     /**
      * getRewinding
      */
@@ -320,26 +330,22 @@ class Api extends Controller {
             $type = input('type');
             switch ($type) {
                 case 'all':
-                    $list = db('test')
-                        ->field(['question'])
-                        ->where('id', $id)
-                        ->find();
+                    $where['id']=['=',$id];
+                    $list=$this->getTestQuestion($where);
                     if ($list) {
-                        echo $this->toJson(0, 'success', json_decode($list['question']));
+                        echo $this->toJson(0, 'success', $list);
                     } else {
                         echo $this->toJson(1, 'error');
                     }
                     break;
                 case 'wrong':
-                    $list = db('test')
-                        ->field(['question'])
-                        ->where('id', $id)
-                        ->find();
+                    $where['id']=['=',$id];
+                    $list=$this->getTestQuestion($where);
                     if ($list) {
-                        $question = json_decode($list['question']);
                         $questionList = [];
-                        foreach ($question as $val) {
-                            if ($val->answer !== $val->checkAnswer) {
+                        foreach ($list as $val) {
+                            //需要修改strpos($str, $needle)
+                            if ($val['answer'] !== $val['checkAnswer']) {
                                 array_push($questionList, $val);
                             }
                         }
@@ -349,17 +355,13 @@ class Api extends Controller {
                     }
                     break;
                 case 'orderwrong':
-                    $list = db('test')
-                        ->field(['question'])
-                        ->where('id', $id)
-                        ->where('type', 'order')
-                        ->order('create_time', 'desc')
-                        ->find();
+                    $where['id']=['=',$id];
+                    $where['type']=['=','order'];
+                    $list=$this->getTestQuestion($where,'create_time','desc');
                     if ($list) {
-                        $question = json_decode($list['question']);
                         $questionList = [];
-                        foreach ($question as $val) {
-                            if ($val->answer !== $val->checkAnswer) {
+                        foreach ($list as $val) {
+                            if ($val['answer'] !== $val['checkAnswer']) {
                                 array_push($questionList, $val);
                             }
                         }
@@ -378,17 +380,13 @@ class Api extends Controller {
     public function getOrderWrong() {
         if (request()->isPost()) {
             $id = input('post.id');
-            $list = db('test')
-                ->field(['question'])
-                ->where('id', $id)
-                ->where('type', 'order')
-                ->order('create_time', 'desc')
-                ->find();
+            $where['id']=['=',$id];
+            $where['type']=['=','order'];
+            $list=$this->getTestQuestion($where,'create_time','desc');
             if ($list) {
-                $question = json_decode($list['question']);
                 $questionList = [];
-                foreach ($question as $val) {
-                    if ($val->answer !== $val->checkAnswer) {
+                foreach ($list as $val) {
+                    if ($val['answer'] !== $val['checkAnswer']) {
                         array_push($questionList, $val);
                     }
                 }

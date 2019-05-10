@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\subject\lst.html";i:1556087914;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\subject\lst.html";i:1556502695;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -96,7 +96,8 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                table.reload('subject-table');
+                                // location.reload(true);
                             } else {
                                 layer.msg('删除失败！该科目下存在试题', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -119,7 +120,8 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('添加成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                table.reload('subject-table');
+                                // location.reload(true);
                             } else {
                                 layer.msg('添加失败！', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -152,7 +154,8 @@
                             console.log(res);
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                table.reload('subject-table');
+                                // location.reload(true);
                             } else {
                                 layer.msg('删除失败！该科目下存在试题', {icon: 2, time: 3000, shade: 0.2});
                             }

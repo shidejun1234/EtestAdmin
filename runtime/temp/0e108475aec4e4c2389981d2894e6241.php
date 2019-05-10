@@ -1,9 +1,9 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\test\lst.html";i:1556272978;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:56:"D:\sdj\phpStudy\WWW\ETest3/apps/index\view\test\lst.html";i:1556502832;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>科目列表</title>
+    <title>考试列表</title>
     <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
     <link rel="stylesheet" href="__PUBLIC__/style/subject.css">
     <style>
@@ -51,6 +51,7 @@
                 , {field: 'qualified', title: '合格', sort: true}
                 , {field: 'score', title: '得分', sort: true}
                 , {field: 'use_time', title: '用时', sort: true}
+                , {field: 'type', title: '模块', sort: true}
                 , {field: 'create_time', title: '创建时间', sort: true}
                 , {fixed: 'right', title: '操作', toolbar: '#testBar', width: 70}
             ]]
@@ -103,7 +104,8 @@
                         success: function (res) {
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                // location.reload(true);
+                                table.reload('subject-table');
                             } else {
                                 layer.msg('删除失败！该科目下存在试题', {icon: 2, time: 3000, shade: 0.2});
                             }
@@ -111,29 +113,6 @@
                     });
                     layer.close(index);
                 });
-            },
-            addSubject: function () {
-                layer.prompt({
-                    title: '添加科目',
-                    formType: 0
-                }, function (value, index) {
-                    $.ajax({
-                        url: '<?php echo url("Subject/add"); ?>',
-                        type: 'POST',
-                        data: {
-                            name: value
-                        },
-                        success: function (res) {
-                            if (JSON.parse(res).code === 0) {
-                                layer.msg('添加成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
-                            } else {
-                                layer.msg('添加失败！', {icon: 2, time: 3000, shade: 0.2});
-                            }
-                        }
-                    });
-                    layer.close(index);
-                })
             }
         };
 
@@ -159,38 +138,13 @@
                             console.log(res);
                             if (JSON.parse(res).code === 0) {
                                 layer.msg('删除成功！', {icon: 1, time: 2000, shade: 0.2});
-                                location.reload(true);
+                                // location.reload(true);
+                                table.reload('subject-table');
                             } else {
                                 layer.msg('删除失败！该科目下存在试题', {icon: 2, time: 3000, shade: 0.2});
                             }
                         }
                     });
-                    layer.close(index);
-                });
-            } else if (obj.event === 'edit') {
-                layer.prompt({
-                    title: '修改科目',
-                    formType: 0
-                    , value: data.name
-                }, function (value, index) {
-                    $.ajax({
-                        url: '<?php echo url("Subject/edit"); ?>',
-                        type: 'POST',
-                        data: {
-                            id: data.id,
-                            name: value
-                        },
-                        success: function (res) {
-                            if (JSON.parse(res).code === 0) {
-                                layer.msg('修改成功！', {icon: 1, time: 2000, shade: 0.2});
-                                obj.update({
-                                    name: value
-                                });
-                            } else {
-                                layer.msg('删除失败！', {icon: 2, time: 3000, shade: 0.2});
-                            }
-                        }
-                    })
                     layer.close(index);
                 });
             }
