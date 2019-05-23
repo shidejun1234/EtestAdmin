@@ -55,8 +55,6 @@ class Api extends Controller {
             if ($js_code != '') {
                 $url = 'https://api.weixin.qq.com/sns/jscode2session';
                 $params = [
-                    'appid' => 'wx70461f0b0fe0ace0',
-                    'secret' => '4455a34581e0fbb0636973d6355903b6',
                     'grant_type' => 'authorization_code',
                     'js_code' => $js_code
                 ];
